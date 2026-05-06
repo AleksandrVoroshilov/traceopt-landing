@@ -1,0 +1,68 @@
+---
+const faqs = [
+  { n: 'A.01', q: 'What input data do you need?',
+    a: "PCF or Isogen export from SmartPlant 3D, AutoCAD Plant 3D, CADWorx, AVEVA E3D. Plus the tracing brief: heating mode, tracer type, temperature profile, coverage rules. No manual data entry, no CAD conversions." },
+  { n: 'A.02', q: 'What does "optimal" mean here?',
+    a: "Near-optimal in the CARP sense — minimizing total tracer length subject to full coverage and per-circuit capacity constraints. Exact optimum is not computable at industrial scale; Traceopt consistently beats manual routing by 8–12 %." },
+  { n: 'A.03', q: 'How does the solver work?',
+    a: "Two stages: Reactive Path-Scanning produces a feasible starting solution, then Adaptive Large Neighborhood Search destroys and repairs segments until convergence. Deterministic — same input, same output." },
+  { n: 'A.04', q: 'How long does one project take?',
+    a: "400–1 000 segments: under 5 minutes of compute, delivered within 1 business day end-to-end. Incremental re-runs on design changes: seconds." },
+  { n: 'A.05', q: 'Does this replace our thermal tools?',
+    a: "No. Thermal calculation and tracer-type selection stay in your existing tools (Thermon CompuTrace, nVent TraceCalc, in-house calculators). Traceopt solves the routing step alone." },
+  { n: 'A.06', q: 'What do we get back?',
+    a: "Numbered, separated tracer circuits: routes as (x, y, z) polylines in your coordinate system, circuit BOM (CSV / XLSX), routing report with constraint verification, side-by-side comparison vs manual baseline." },
+  { n: 'A.07', q: 'How do we start?',
+    a: "Send a brief via the form. The first project is a free pilot — you see the result before any commercial conversation. We sign your NDA template." },
+];
+---
+<footer>
+  <div class="wrap">
+    <details class="appendix" id="faq">
+      <summary>
+        <span><span class="t">Appendix · Frequently asked</span><span style="color:var(--muted);margin-left:12px">{faqs.length} items</span></span>
+        <span class="x"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 1v8M1 5h8"></path></svg></span>
+      </summary>
+      <div class="appendix-inner">
+        {faqs.map(({ n, q, a }) => (
+          <details>
+            <summary>
+              <span class="n">{n}</span>
+              <span>{q}</span>
+              <span class="xs"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 1v8M1 5h8"></path></svg></span>
+            </summary>
+            <div class="ans">{a}</div>
+          </details>
+        ))}
+      </div>
+    </details>
+
+    <div class="foot-top">
+      <div class="brand-col">
+        <a class="brand" href="#"><span class="mark"></span><span>Traceopt</span></a>
+        <p>Optimal heat-tracer routing for process piping networks. Engineering as a service, not a CAD plugin.</p>
+      </div>
+      <div>
+        <h4>Links</h4>
+        <ul>
+          <li><a href="#process">01 · Process</a></li>
+          <li><a href="#result">02 · Result</a></li>
+          <li><a href="#contact">03 · Contact</a></li>
+          <li><a href="#faq">Appendix · FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:engineering@traceopt.com">engineering@traceopt.com</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Datasheet · PDF</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© 2026 · Traceopt · Built by process engineers &amp; optimization researchers</div>
+      <div class="r"><span>v0.9.3</span><a href="#">Privacy</a><a href="#">Terms</a></div>
+    </div>
+  </div>
+</footer>

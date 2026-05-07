@@ -1,6 +1,6 @@
 // Hero particle canvas — migrated to Three.js (GPU-accelerated points)
 // Exact 1:1 visual & behavior with original CPU canvas. No new effects.
-// Physics on CPU, rendering on GPU via Three.js Points
+// Physics on CPU, rendering on GPU via Three.js Points + ShaderMaterial for variable size
 
 import * as THREE from 'three';
 
@@ -81,8 +81,6 @@ export async function initParticleCanvas(): Promise<void> {
 
   let camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0, 1);
 
-  // Renderer - WebGL for maximum compatibility (Points performance is excellent)
-  // WebGPU can be added later if needed, but WebGL is more reliable for this use case in 2026
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
@@ -100,13 +98,32 @@ export async function initParticleCanvas(): Promise<void> {
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-  const material = new THREE.PointsMaterial({
-    size: BASE_RADIUS,
+  // Custom ShaderMaterial to support per-point size (PointsMaterial does not)
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uBaseSize: { value: BASE_RADIUS }
+    },
+    vertexShader: `
+      attribute float size;
+      varying vec3 vColor;
+
+      void main() {
+        vColor = color;
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        gl_PointSize = max(0.5, size * 3.2);
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vColor;
+      void main() {
+        if (length(gl_PointCoord - vec2(0.5)) > 0.5) discard;
+        gl_FragColor = vec4(vColor, 1.0);
+      }
+    `,
     vertexColors: true,
     transparent: true,
-    opacity: ALPHA,
     depthTest: false,
-    sizeAttenuation: false, // use screen pixels
   });
 
   const pointsMesh = new THREE.Points(geometry, material);
@@ -143,7 +160,6 @@ export async function initParticleCanvas(): Promise<void> {
 
     renderer.setSize(cssW, cssH, false);
 
-    // Orthographic camera (pixel coordinates, Y down from top)
     camera.left = 0;
     camera.right = cssW;
     camera.top = 0;
@@ -171,7 +187,7 @@ export async function initParticleCanvas(): Promise<void> {
       const p = particles[i];
       const idx = i * 3;
       posAttr.array[idx]     = p.x;
-      posAttr.array[idx + 1] = p.y;  // NO flip — camera Y is down (top=0)
+      posAttr.array[idx + 1] = p.y;
       posAttr.array[idx + 2] = 0;
 
       const col = styleForI(p.i);
@@ -179,7 +195,8 @@ export async function initParticleCanvas(): Promise<void> {
       colAttr.array[idx + 1] = col.g;
       colAttr.array[idx + 2] = col.b;
 
-      sizeAttr.array[i] = Math.max(0.5, p.s * BASE_RADIUS) * 1.6;
+      // Variable size based on p.s (pscale)
+      sizeAttr.array[i] = p.s;
     }
     posAttr.needsUpdate = true;
     colAttr.needsUpdate = true;
@@ -249,5 +266,5 @@ export async function initParticleCanvas(): Promise<void> {
     requestAnimationFrame(tick);
   }
 
-  console.log('%c✅ Hero canvas: Three.js Points (22k particles)', 'color:#D85A1B; font-family:monospace; font-size:11px');
+  console.log('%c✅ Hero canvas: Three.js + ShaderMaterial (22k particles, variable size)', 'color:#D85A1B; font-family:monospace; font-size:11px');
 }

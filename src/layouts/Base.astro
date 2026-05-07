@@ -30,7 +30,7 @@ const { title = 'Traceopt — Optimal tracer routing' } = Astro.props;
 
       initTweaks();
       initForm();
-      initParticleCanvas();
+      initParticleCanvas().catch(e => console.error('Particle canvas init failed:', e));
     </script>
   </body>
 </html>

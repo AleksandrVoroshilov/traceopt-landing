@@ -2,9 +2,14 @@
 // Exact 1:1 visual & behavior with original CPU canvas. No new effects.
 // Physics on CPU, rendering on GPU via Three.js Points + ShaderMaterial for variable size
 
-import * as THREE from 'three';
+import * as THREE from "three";
 
-interface PointDatum { x: number; y: number; i: number; s: number; }
+interface PointDatum {
+  x: number;
+  y: number;
+  i: number;
+  s: number;
+}
 interface PointsData {
   version: number;
   aspect: number;
@@ -13,35 +18,51 @@ interface PointsData {
   points: PointDatum[];
 }
 
-const COLOR_LOW   = '#1a1a1a';
-const COLOR_HIGH  = '#D85A1B';
-const GAMMA       = 1.95;           // Balanced: good gray shades + enough orange accents
-const BASE_RADIUS = 3.5;
+const COLOR_LOW = "#1a1a1a";
+const COLOR_HIGH = "#D85A1B";
+const GAMMA = 0.5; // Balanced: good gray shades + enough orange accents
+const BASE_RADIUS = 2.0;
 const MOUSE_RADIUS = 140;
-const MOUSE_FORCE  = 0.55;
-const SPRING_K     = 0.06;
-const DAMPING      = 0.86;
-const ALPHA        = 1.0;
-const RAMP_STOPS   = 32;
+const MOUSE_FORCE = 0.55;
+const SPRING_K = 0.06;
+const DAMPING = 0.86;
+const ALPHA = 1.0;
+const RAMP_STOPS = 32;
 
 export async function initParticleCanvas(): Promise<void> {
-  const wrap = document.getElementById('hero-canvas-wrap') as HTMLElement | null;
-  const existingCanvas = document.getElementById('hero-canvas') as HTMLCanvasElement | null;
+  const wrap = document.getElementById(
+    "hero-canvas-wrap",
+  ) as HTMLElement | null;
+  const existingCanvas = document.getElementById(
+    "hero-canvas",
+  ) as HTMLCanvasElement | null;
   if (!wrap || !existingCanvas) return;
 
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   // Load data
-  const res = await fetch('/points-data.json');
+  const res = await fetch("/points-data.json");
   const data: PointsData = await res.json();
 
   const parseColor = (h: string) => {
-    h = h.replace('#', '').trim();
-    if (h.length === 3) return { r: parseInt(h[0]+h[0],16), g: parseInt(h[1]+h[1],16), b: parseInt(h[2]+h[2],16) };
-    return { r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16) };
+    h = h.replace("#", "").trim();
+    if (h.length === 3)
+      return {
+        r: parseInt(h[0] + h[0], 16),
+        g: parseInt(h[1] + h[1], 16),
+        b: parseInt(h[2] + h[2], 16),
+      };
+    return {
+      r: parseInt(h.slice(0, 2), 16),
+      g: parseInt(h.slice(2, 4), 16),
+      b: parseInt(h.slice(4, 6), 16),
+    };
   };
 
-  const lo = parseColor(COLOR_LOW), hi = parseColor(COLOR_HIGH);
+  const lo = parseColor(COLOR_LOW),
+    hi = parseColor(COLOR_HIGH);
 
   const rampColors: THREE.Color[] = new Array(RAMP_STOPS);
   for (let s = 0; s < RAMP_STOPS; s++) {
@@ -55,13 +76,34 @@ export async function initParticleCanvas(): Promise<void> {
   const styleForI = (i: number) => {
     // Non-linear ramp for clean look: most points dark/gray, few bright orange
     const normalized = Math.pow(Math.max(0, Math.min(1, i)), GAMMA);
-    const idx = Math.min(RAMP_STOPS - 1, Math.max(0, Math.round(normalized * (RAMP_STOPS - 1))));
+    const idx = Math.min(
+      RAMP_STOPS - 1,
+      Math.max(0, Math.round(normalized * (RAMP_STOPS - 1))),
+    );
     return rampColors[idx];
   };
 
-  type Particle = { homeX: number; homeY: number; x: number; y: number; vx: number; vy: number; i: number; s: number };
-  const particles: Particle[] = data.points.map(() => ({ homeX:0, homeY:0, x:0, y:0, vx:0, vy:0, i:0, s:0 }));
-  const homesNorm = data.points.map(p => ({ nx: p.x, ny: p.y }));
+  type Particle = {
+    homeX: number;
+    homeY: number;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    i: number;
+    s: number;
+  };
+  const particles: Particle[] = data.points.map(() => ({
+    homeX: 0,
+    homeY: 0,
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    i: 0,
+    s: 0,
+  }));
+  const homesNorm = data.points.map((p) => ({ nx: p.x, ny: p.y }));
   for (let i = 0; i < data.points.length; i++) {
     particles[i].i = data.points[i].i;
     particles[i].s = data.points[i].s;
@@ -69,13 +111,13 @@ export async function initParticleCanvas(): Promise<void> {
 
   // Reuse existing canvas from HTML (critical for correct hero size!)
   const canvas = existingCanvas;
-  canvas.style.width = '100%';
-  canvas.style.height = '100%';
-  canvas.style.display = 'block';
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
+  canvas.style.display = "block";
 
   // Three.js setup
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xF4F1EA); // --bg color
+  scene.background = new THREE.Color(0xf4f1ea); // --bg color
 
   let camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0, 1);
 
@@ -92,14 +134,14 @@ export async function initParticleCanvas(): Promise<void> {
   const sizes = new Float32Array(particleCount);
 
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
   // Custom ShaderMaterial for variable point size
   const material = new THREE.ShaderMaterial({
     uniforms: {
-      uBaseSize: { value: BASE_RADIUS }
+      uBaseSize: { value: BASE_RADIUS },
     },
     vertexShader: `
       attribute float size;
@@ -177,19 +219,19 @@ export async function initParticleCanvas(): Promise<void> {
   };
 
   const updateBuffers = () => {
-    const posAttr = geometry.getAttribute('position') as THREE.BufferAttribute;
-    const colAttr = geometry.getAttribute('color') as THREE.BufferAttribute;
-    const sizeAttr = geometry.getAttribute('size') as THREE.BufferAttribute;
+    const posAttr = geometry.getAttribute("position") as THREE.BufferAttribute;
+    const colAttr = geometry.getAttribute("color") as THREE.BufferAttribute;
+    const sizeAttr = geometry.getAttribute("size") as THREE.BufferAttribute;
 
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
       const idx = i * 3;
-      posAttr.array[idx]     = p.x;
+      posAttr.array[idx] = p.x;
       posAttr.array[idx + 1] = p.y;
       posAttr.array[idx + 2] = 0;
 
       const col = styleForI(p.i);
-      colAttr.array[idx]     = col.r;
+      colAttr.array[idx] = col.r;
       colAttr.array[idx + 1] = col.g;
       colAttr.array[idx + 2] = col.b;
 
@@ -209,10 +251,13 @@ export async function initParticleCanvas(): Promise<void> {
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
   };
-  const onPointerLeave = () => { mouseX = -9999; mouseY = -9999; };
+  const onPointerLeave = () => {
+    mouseX = -9999;
+    mouseY = -9999;
+  };
 
-  wrap.addEventListener('pointermove', onPointerMove, { passive: true });
-  wrap.addEventListener('pointerleave', onPointerLeave, { passive: true });
+  wrap.addEventListener("pointermove", onPointerMove, { passive: true });
+  wrap.addEventListener("pointerleave", onPointerLeave, { passive: true });
 
   // Resize
   const ro = new ResizeObserver(() => {
@@ -263,5 +308,8 @@ export async function initParticleCanvas(): Promise<void> {
     requestAnimationFrame(tick);
   }
 
-  console.log('%c✅ Hero canvas: Three.js + correct size & color ramp', 'color:#D85A1B; font-family:monospace; font-size:11px');
+  console.log(
+    "%c✅ Hero canvas: Three.js + correct size & color ramp",
+    "color:#D85A1B; font-family:monospace; font-size:11px",
+  );
 }

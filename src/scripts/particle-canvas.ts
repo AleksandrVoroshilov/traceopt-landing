@@ -15,7 +15,7 @@ interface PointsData {
 
 const COLOR_LOW   = '#1a1a1a';
 const COLOR_HIGH  = '#D85A1B';
-const GAMMA       = 1;
+const GAMMA       = 3.2;           // Higher gamma = more dark points, fewer bright orange
 const BASE_RADIUS = 3.5;
 const MOUSE_RADIUS = 140;
 const MOUSE_FORCE  = 0.55;
@@ -53,7 +53,9 @@ export async function initParticleCanvas(): Promise<void> {
   }
 
   const styleForI = (i: number) => {
-    const idx = Math.min(RAMP_STOPS - 1, Math.max(0, Math.round((GAMMA === 1 ? i : Math.pow(i, GAMMA)) * (RAMP_STOPS - 1))));
+    // Non-linear ramp: most points stay dark, only high intensity becomes orange
+    const normalized = Math.pow(Math.max(0, Math.min(1, i)), GAMMA);
+    const idx = Math.min(RAMP_STOPS - 1, Math.max(0, Math.round(normalized * (RAMP_STOPS - 1))));
     return rampColors[idx];
   };
 
@@ -196,7 +198,7 @@ export async function initParticleCanvas(): Promise<void> {
       colAttr.array[idx + 2] = col.b;
 
       // Variable size based on p.s (pscale)
-      sizeAttr.array[i] = p.s;
+      sizeAttr.array[i] = Math.max(0.5, p.s * BASE_RADIUS);
     }
     posAttr.needsUpdate = true;
     colAttr.needsUpdate = true;
@@ -266,5 +268,5 @@ export async function initParticleCanvas(): Promise<void> {
     requestAnimationFrame(tick);
   }
 
-  console.log('%c✅ Hero canvas: Three.js + ShaderMaterial (22k particles, variable size)', 'color:#D85A1B; font-family:monospace; font-size:11px');
+  console.log('%c✅ Hero canvas: Three.js + ShaderMaterial (22k particles, variable size + correct color ramp)', 'color:#D85A1B; font-family:monospace; font-size:11px');
 }

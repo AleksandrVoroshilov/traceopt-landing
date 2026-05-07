@@ -399,6 +399,32 @@ section.hero {
         linear-gradient(to left, var(--bg) 0%, transparent 12%);
 }
 
+/* Hero headline — blinking dot after "computed." (subtle 2025 ping) */
+@keyframes ping-dot {
+    75%,
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.hero-left h1 em .dot {
+    display: inline-block;
+    animation: ping-dot 2.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+    color: var(--accent);
+    text-shadow:
+        0 0 4px var(--accent),
+        0 0 8px rgba(216, 90, 27, 0.55);
+    vertical-align: baseline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-left h1 em .dot {
+        animation: none;
+        text-shadow: none;
+    }
+}
+
 /* ---------- MARQUEE ---------- */
 .colophon {
     overflow: hidden;

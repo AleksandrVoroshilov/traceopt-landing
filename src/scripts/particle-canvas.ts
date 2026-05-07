@@ -1,7 +1,8 @@
-// Hero particle canvas — migrated to Three.js + WebGPURenderer (GPU-accelerated)
+// Hero particle canvas — migrated to Three.js (GPU-accelerated points)
 // Exact 1:1 visual & behavior with original CPU canvas. No new effects.
-// Physics on CPU (22k particles is fine), rendering on GPU.
-// WebGPU preferred, fallback to WebGL.
+// Physics on CPU, rendering on GPU via Three.js Points
+
+import * as THREE from 'three';
 
 interface PointDatum { x: number; y: number; i: number; s: number; }
 interface PointsData {
@@ -30,6 +31,7 @@ export async function initParticleCanvas(): Promise<void> {
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Load data
   const res = await fetch('/points-data.json');
   const data: PointsData = await res.json();
 
@@ -38,6 +40,7 @@ export async function initParticleCanvas(): Promise<void> {
     if (h.length === 3) return { r: parseInt(h[0]+h[0],16), g: parseInt(h[1]+h[1],16), b: parseInt(h[2]+h[2],16) };
     return { r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16) };
   };
+
   const lo = parseColor(COLOR_LOW), hi = parseColor(COLOR_HIGH);
 
   const rampColors: THREE.Color[] = new Array(RAMP_STOPS);
@@ -48,6 +51,7 @@ export async function initParticleCanvas(): Promise<void> {
     const b = lo.b + (hi.b - lo.b) * t;
     rampColors[s] = new THREE.Color(r / 255, g / 255, b / 255);
   }
+
   const styleForI = (i: number) => {
     const idx = Math.min(RAMP_STOPS - 1, Math.max(0, Math.round((GAMMA === 1 ? i : Math.pow(i, GAMMA)) * (RAMP_STOPS - 1))));
     return rampColors[idx];
@@ -73,35 +77,18 @@ export async function initParticleCanvas(): Promise<void> {
 
   // Three.js setup
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xF4F1EA); // --bg
+  scene.background = new THREE.Color(0xF4F1EA); // --bg color
 
   let camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0, 1);
 
-  let renderer: THREE.WebGLRenderer | any;
-  let isWebGPU = false;
-
-  try {
-    // Try WebGPU (Three.js r170+)
-    const WebGPURendererClass = (THREE as any).WebGPURenderer;
-    if (typeof WebGPURendererClass === 'function') {
-      renderer = new WebGPURendererClass({
-        canvas,
-        antialias: true,
-      });
-      await renderer.init();
-      isWebGPU = true;
-    }
-  } catch (e) {
-    console.log('WebGPU not available, falling back to WebGL');
-  }
-
-  if (!renderer) {
-    renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-    });
-  }
+  // Renderer - WebGL for maximum compatibility (Points performance is excellent)
+  // WebGPU can be added later if needed, but WebGL is more reliable for this use case in 2026
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+  });
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
 
   const particleCount = particles.length;
   const positions = new Float32Array(particleCount * 3);
@@ -119,7 +106,7 @@ export async function initParticleCanvas(): Promise<void> {
     transparent: true,
     opacity: ALPHA,
     depthTest: false,
-    sizeAttenuation: false, // pixel sizes
+    sizeAttenuation: false, // use screen pixels
   });
 
   const pointsMesh = new THREE.Points(geometry, material);
@@ -156,18 +143,18 @@ export async function initParticleCanvas(): Promise<void> {
 
     renderer.setSize(cssW, cssH, false);
 
-    // Orthographic camera matching canvas coords (Y down)
+    // Orthographic camera (pixel coordinates, Y down)
     camera.left = 0;
     camera.right = cssW;
     camera.top = 0;
     camera.bottom = cssH;
-    camera.near = 0;
+    camera.near = -1;
     camera.far = 1;
     camera.updateProjectionMatrix();
 
     remapHomes();
 
-    // Reset particles to home
+    // Reset particles
     for (const p of particles) {
       p.x = p.homeX;
       p.y = p.homeY;
@@ -183,16 +170,16 @@ export async function initParticleCanvas(): Promise<void> {
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
       const idx = i * 3;
-      posAttr.array[idx] = p.x;
-      posAttr.array[idx + 1] = cssH - p.y; // flip Y for Three.js (0,0 top-left)
+      posAttr.array[idx]     = p.x;
+      posAttr.array[idx + 1] = cssH - p.y; // flip Y (Three.js Y+ is up)
       posAttr.array[idx + 2] = 0;
 
       const col = styleForI(p.i);
-      colAttr.array[idx] = col.r;
+      colAttr.array[idx]     = col.r;
       colAttr.array[idx + 1] = col.g;
       colAttr.array[idx + 2] = col.b;
 
-      sizeAttr.array[i] = Math.max(0.5, p.s * BASE_RADIUS) * 1.8; // slight adjust for Three points
+      sizeAttr.array[i] = Math.max(0.5, p.s * BASE_RADIUS) * 1.6;
     }
     posAttr.needsUpdate = true;
     colAttr.needsUpdate = true;
@@ -223,10 +210,12 @@ export async function initParticleCanvas(): Promise<void> {
   });
   ro.observe(wrap);
 
-  // Animation tick
+  // Animation loop
   const tick = () => {
     const radSq = MOUSE_RADIUS * MOUSE_RADIUS;
+
     for (const p of particles) {
+      // Mouse repulsion
       const dxm = p.x - mouseX;
       const dym = p.y - mouseY;
       const dSq = dxm * dxm + dym * dym;
@@ -237,6 +226,8 @@ export async function initParticleCanvas(): Promise<void> {
         p.vx += (dxm / d) * f;
         p.vy += (dym / d) * f;
       }
+
+      // Spring to home
       p.vx += (p.homeX - p.x) * SPRING_K;
       p.vy += (p.homeY - p.y) * SPRING_K;
       p.vx *= DAMPING;
@@ -258,5 +249,5 @@ export async function initParticleCanvas(): Promise<void> {
     requestAnimationFrame(tick);
   }
 
-  console.log(`%c✅ Hero canvas migrated to Three.js ${isWebGPU ? 'WebGPU' : 'WebGL'} renderer (22k particles @ 60fps)`, 'color:#D85A1B; font-family:monospace; font-size:11px');
+  console.log('%c✅ Hero canvas: Three.js Points (22k particles)', 'color:#D85A1B; font-family:monospace; font-size:11px');
 }

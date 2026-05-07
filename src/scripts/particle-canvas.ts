@@ -112,7 +112,7 @@ export async function initParticleCanvas(): Promise<void> {
       void main() {
         vColor = color;
         vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-        gl_PointSize = max(0.5, size * 3.2);
+        gl_PointSize = max(0.5, size * 1.8);  // ← уменьшено с 3.2 → 1.8 для точного match оригинальному canvas
         gl_Position = projectionMatrix * mvPosition;
       }
     `,

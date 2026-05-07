@@ -15,7 +15,7 @@ interface PointsData {
 
 const COLOR_LOW   = '#1a1a1a';
 const COLOR_HIGH  = '#D85A1B';
-const GAMMA       = 3.2;           // Higher gamma = more dark points, fewer bright orange
+const GAMMA       = 1.95;           // Balanced: good gray shades + enough orange accents
 const BASE_RADIUS = 3.5;
 const MOUSE_RADIUS = 140;
 const MOUSE_FORCE  = 0.55;
@@ -26,8 +26,8 @@ const RAMP_STOPS   = 32;
 
 export async function initParticleCanvas(): Promise<void> {
   const wrap = document.getElementById('hero-canvas-wrap') as HTMLElement | null;
-  const oldCanvas = document.getElementById('hero-canvas') as HTMLCanvasElement | null;
-  if (!wrap || !oldCanvas) return;
+  const existingCanvas = document.getElementById('hero-canvas') as HTMLCanvasElement | null;
+  if (!wrap || !existingCanvas) return;
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -53,7 +53,7 @@ export async function initParticleCanvas(): Promise<void> {
   }
 
   const styleForI = (i: number) => {
-    // Non-linear ramp: most points stay dark, only high intensity becomes orange
+    // Non-linear ramp for clean look: most points dark/gray, few bright orange
     const normalized = Math.pow(Math.max(0, Math.min(1, i)), GAMMA);
     const idx = Math.min(RAMP_STOPS - 1, Math.max(0, Math.round(normalized * (RAMP_STOPS - 1))));
     return rampColors[idx];
@@ -67,15 +67,11 @@ export async function initParticleCanvas(): Promise<void> {
     particles[i].s = data.points[i].s;
   }
 
-  // Hide old canvas
-  oldCanvas.style.display = 'none';
-
-  // Create canvas for Three.js
-  const canvas = document.createElement('canvas');
+  // Reuse existing canvas from HTML (critical for correct hero size!)
+  const canvas = existingCanvas;
   canvas.style.width = '100%';
   canvas.style.height = '100%';
   canvas.style.display = 'block';
-  wrap.appendChild(canvas);
 
   // Three.js setup
   const scene = new THREE.Scene();
@@ -100,7 +96,7 @@ export async function initParticleCanvas(): Promise<void> {
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-  // Custom ShaderMaterial to support per-point size (PointsMaterial does not)
+  // Custom ShaderMaterial for variable point size
   const material = new THREE.ShaderMaterial({
     uniforms: {
       uBaseSize: { value: BASE_RADIUS }
@@ -112,7 +108,7 @@ export async function initParticleCanvas(): Promise<void> {
       void main() {
         vColor = color;
         vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-        gl_PointSize = max(0.5, size * 1.8);  // ← уменьшено с 3.2 → 1.8 для точного match оригинальному canvas
+        gl_PointSize = max(0.5, size * 2.1);  // Tuned for correct visual size
         gl_Position = projectionMatrix * mvPosition;
       }
     `,
@@ -172,7 +168,7 @@ export async function initParticleCanvas(): Promise<void> {
 
     remapHomes();
 
-    // Reset particles
+    // Reset particles to home position
     for (const p of particles) {
       p.x = p.homeX;
       p.y = p.homeY;
@@ -197,7 +193,6 @@ export async function initParticleCanvas(): Promise<void> {
       colAttr.array[idx + 1] = col.g;
       colAttr.array[idx + 2] = col.b;
 
-      // Variable size based on p.s (pscale)
       sizeAttr.array[i] = Math.max(0.5, p.s * BASE_RADIUS);
     }
     posAttr.needsUpdate = true;
@@ -268,5 +263,5 @@ export async function initParticleCanvas(): Promise<void> {
     requestAnimationFrame(tick);
   }
 
-  console.log('%c✅ Hero canvas: Three.js + ShaderMaterial (22k particles, variable size + correct color ramp)', 'color:#D85A1B; font-family:monospace; font-size:11px');
+  console.log('%c✅ Hero canvas: Three.js + correct size & color ramp', 'color:#D85A1B; font-family:monospace; font-size:11px');
 }

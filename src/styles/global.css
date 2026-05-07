@@ -217,7 +217,7 @@ nav.primary a .num {
     transition: width 0.08s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Улучшение gap и hover (уже должно быть, но на всякий) */
+/* Nav primary — 01 · Process (clean 2026 typography with middot) */
 .nav .primary {
     gap: 40px;
 }
@@ -225,14 +225,23 @@ nav.primary a .num {
 .nav .primary a {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     color: var(--muted);
 }
 
-.nav .primary a .num {
+.nav .primary .num {
     color: var(--muted-2);
     font-size: 11px;
     letter-spacing: 0.08em;
+    font-weight: 500;
+}
+
+.nav .primary .sep {
+    color: var(--muted-2);
+    font-size: 13px;
+    line-height: 1;
+    opacity: 0.75;
+    margin-top: -1px;
 }
 
 .nav .primary a:hover,

@@ -143,7 +143,7 @@ export async function initParticleCanvas(): Promise<void> {
 
     renderer.setSize(cssW, cssH, false);
 
-    // Orthographic camera (pixel coordinates, Y down)
+    // Orthographic camera (pixel coordinates, Y down from top)
     camera.left = 0;
     camera.right = cssW;
     camera.top = 0;
@@ -171,7 +171,7 @@ export async function initParticleCanvas(): Promise<void> {
       const p = particles[i];
       const idx = i * 3;
       posAttr.array[idx]     = p.x;
-      posAttr.array[idx + 1] = cssH - p.y; // flip Y (Three.js Y+ is up)
+      posAttr.array[idx + 1] = p.y;  // NO flip — camera Y is down (top=0)
       posAttr.array[idx + 2] = 0;
 
       const col = styleForI(p.i);

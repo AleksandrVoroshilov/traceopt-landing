@@ -1,16 +1,40 @@
 ---
+import { getCollection } from "astro:content";
 ---
+
 <header class="nav">
-  <div class="wrap nav-inner">
-    <a class="brand" href="#"><span class="mark"></span><span>Traceopt</span></a>
-    <nav class="primary">
-      <a href="#process"><span class="num">01</span>Process</a>
-      <a href="#result"><span class="num">02</span>Result</a>
-      <a href="#contact"><span class="num">03</span>Contact</a>
-    </nav>
-    <div class="nav-right">
-      <a href="#datasheet" class="btn btn-ghost">Datasheet · PDF</a>
-      <a href="#contact" class="btn btn-primary">Send brief</a>
+    <div class="nav-inner wrap">
+        <!-- Brand -->
+        <a class="brand" href="/">
+            <span class="mark">
+                <span></span>
+            </span>
+            <span>TRACEOPT</span>
+        </a>
+
+        <!-- Primary nav -->
+        <nav class="primary">
+            <a href="#process"><span class="num">01.</span>Process</a>
+            <a href="#result"><span class="num">02.</span>Result</a>
+            <a href="#contact"><span class="num">03.</span>Contact</a>
+            <a href="#faq"><span class="num">04.</span>FAQ</a>
+        </nav>
+
+        <!-- Right side -->
+        <div class="nav-right">
+            <a href="/datasheet.pdf" class="btn btn-ghost" target="_blank">
+                Datasheet · PDF
+            </a>
+            <a href="#contact" class="btn btn-primary btn-lg"> Send brief </a>
+        </div>
     </div>
-  </div>
+
+    <!-- Scroll progress -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>
 </header>
+
+<style>
+    /* Nav styles уже есть в global.css — здесь только компонент */
+</style>

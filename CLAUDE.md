@@ -99,11 +99,12 @@ https://www.rebelway.net/sci-fi-visualizations-houdini
 
 ## Agents
 
-- `/lead` — Tech Lead + UI/UX, architecture decisions
-- `/frontend` — Astro components, CSS, TypeScript
+- `/lead` — Tech Lead + UI/UX, architecture decisions, reviews other agents
+- `/frontend` — Astro components, CSS, TypeScript, Three.js islands
 - `/designer` — Content strategy, copy, section structure
-- `/backend` — Fastify API for contact form
+- `/backend` — Fastify API for the contact form
 - `/seo` — Core Web Vitals, meta tags, Schema.org
+- `/qa` — Pre-release checklist (build, anchors, breakpoints, a11y, form path)
 
 ## CSS conventions
 

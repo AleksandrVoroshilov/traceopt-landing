@@ -46,35 +46,14 @@ public/
 - Никаких `!important`
 - Сетка фона (`background-image` на `<body>`) — `var(--gx)`, синхронизируется через `tweaks.ts:syncHeroGrid`
 
-## Реальные дизайн-токены (light/paper)
+## Дизайн-токены
 
-```css
-:root {
-  --bg:           #f4f1ea;
-  --bg-2:         #ede9df;
-  --paper:        #faf7f0;
-  --ink:          #14120f;
-  --ink-2:        #2b2824;
-  --muted:        #6f6a62;
-  --muted-2:      #a09a90;
-  --rule:         #d9d3c4;
-  --rule-strong:  #bfb8a6;
-  --accent:       #d85a1b;   /* основной */
-  --accent-ink:   #8b3a10;
-  --ok:           #3e7e4e;
+**Источник правды:** [CLAUDE.md → Design tokens](../../CLAUDE.md) и `:root` в `src/styles/global.css`. Здесь не дублирую — три копии одних значений всегда расходятся.
 
-  --dark-bg:      #0b0a08;
-  --dark-ink:     #f1ede2;
-  --dark-muted:   #8a8378;
-  --dark-rule:    #2a2720;
-
-  --display: "Archivo Narrow", "Arial Narrow", sans-serif;
-  --sans:    "Inter", -apple-system, sans-serif;
-  --mono:    "JetBrains Mono", ui-monospace, Menlo, monospace;
-
-  --gx: 32px;  /* шаг сетки фона */
-}
-```
+Что важно помнить:
+- Тема **светлая paper-style** (фон `#f4f1ea`, не `#000`)
+- Шрифты: `--display` (Archivo Narrow), `--sans` (Inter), `--mono` (JetBrains Mono)
+- Background grid через `--gx` (32px по умолчанию)
 
 ## TypeScript / Islands
 

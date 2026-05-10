@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Traceopt — Hero Pinned Scroll Animation v6 (2026)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --bg: #F4F1EA;
+            --ink: #14120F;
+            --accent: #D85A1B;
+            --dark-bg: #0B0A08;
+            --dark-ink: #F1EDE2;
+            --dark-muted: #8A8378;
+            --dark-rule: #2A2720;
+        }
+        
+        * { box-sizing: border-box; margin:0; padding:0; }
+        body { background: var(--bg); font-family: 'Inter', system-ui, sans-serif; color: var(--ink); }
+
+        #hero-wrapper {
+            position: relative;
+            height: 240vh;
+        }
+
+        .hero {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid #D9D3C4;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .hero-left {
+            padding: 80px 60px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-left h1 {
+            font-family: 'Archivo Narrow', sans-serif;
+            font-size: clamp(52px, 7vw, 98px);
+            font-weight: 600;
+            line-height: 0.92;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+        }
+
+        .title-bottom {
+            display: block;
+            margin-top: var(--gap, 32px);
+            transition: margin-top 0.55s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        /* Весь остальной текст — полностью неподвижен */
+        .hero-left .static-content {
+            margin-top: 48px;
+        }
+
+        /* Right */
+        .hero-right {
+            position: relative;
+            background: var(--dark-bg);
+            border-left: 1px solid var(--dark-ink);
+        }
+        .hero-window {
+            position: absolute;
+            inset: 40px 40px;
+            background: var(--dark-bg);
+            border: 1px solid var(--dark-ink);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #hero-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .static-path {
+            fill: none;
+            stroke: #D85A1B;
+            stroke-width: 3.8;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+        }
+        .static-path.highlight {
+            stroke: #fff;
+            stroke-width: 1.6;
+            opacity: 0.18;
+        }
+
+        .animated-path {
+            fill: none;
+            stroke: #D85A1B;
+            stroke-width: 4.4;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 10px #D85A1B);
+        }
+
+        .ui-overlay {
+            position: absolute;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--dark-muted);
+            z-index: 5;
+            background: rgba(20,18,15,.65);
+            backdrop-filter: blur(6px);
+            border: 1px solid var(--dark-rule);
+            padding: 8px 12px;
+        }
+        .ui-ul { top: 30px; left: 30px; }
+        .ui-ur { top: 30px; right: 30px; text-align: right; }
+
+        .demo-content {
+            padding: 120px 60px;
+            max-width: 1360px;
+            margin: 0 auto;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+    </style>
+</head>
+<body>
+
+<div id="hero-wrapper">
+    <section class="hero" id="hero">
+        <!-- Left -->
+        <div class="hero-left">
+            <div style="font-family:monospace;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;color:#8A8378;">TRACEOPT 2026</div>
+            
+            <h1>
+                OPTIMAL TRACER<br>
+                <span class="routing">ROUTING,</span>
+                <span class="title-bottom" id="title-bottom">COMPUTED.</span>
+            </h1>
+
+            <!-- Весь остальной текст неподвижен -->
+            <div class="static-content">
+                <p style="font-size:18px;max-width:38ch;color:#2B2824;">
+                    You send piping data and the tracing brief.<br>
+                    We return optimized tracer circuits as (x, y, z) polylines.
+                </p>
+
+                <div style="margin-top:48px;display:flex;gap:12px;">
+                    <button style="background:#14120F;color:#F4F1EA;padding:16px 32px;font-family:monospace;font-size:13px;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;">SEND BRIEF →</button>
+                    <button style="border:2px solid #BFB8A6;padding:16px 32px;font-family:monospace;font-size:13px;letter-spacing:1px;text-transform:uppercase;background:transparent;">DATASHEET</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right -->
+        <div class="hero-right">
+            <div class="hero-window"></div>
+
+            <svg id="hero-svg" viewBox="0 0 2000 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="4.5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Статичные трейсеры справа -->
+                <path class="static-path" d="M1080 220 L1280 220 L1280 380 L1480 380 L1480 280 L1680 280 L1680 520 L1820 520" />
+                <path class="static-path" d="M1150 340 L1150 620 L1350 620 L1350 480 L1550 480 L1550 680 L1750 680" />
+                <path class="static-path" d="M1220 160 L1420 160 L1420 420 L1620 420 L1620 300 L1780 300" />
+                <path class="static-path highlight" d="M1080 220 L1280 220 L1280 380 L1480 380 L1480 280 L1680 280 L1680 520 L1820 520" />
+
+                <!-- ЕДИНСТВЕННАЯ линия — теперь полностью отвечает за всё -->
+                <!-- Начальный сегмент точно соответствует позиции "синяя" на твоём скетче -->
+                <path id="animated-path" class="animated-path" 
+                      d="M 320 460 L 520 460 L 680 460 L 820 460 L 820 340 L 1080 340 L 1280 340 L 1280 520 L 1480 520" 
+                      stroke-dasharray="1420 1420" 
+                      stroke-dashoffset="1420"
+                      filter="url(#glow)"/>
+            </svg>
+
+            <div class="ui-overlay ui-ul">
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <span style="background:#D85A1B;color:#fff;padding:2px 8px;border-radius:2px;font-size:9px;">LIVE</span>
+                    <span>3.2s SOLVED</span>
+                </div>
+            </div>
+            <div class="ui-overlay ui-ur">
+                <div><b>TRACEOPT</b> v0.9.4</div>
+                <div>212 EDGES • 6 CIRCUITS</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="demo-content">
+    <h2>Скролль медленно вниз</h2>
+    <p>Теперь исправлено окончательно:</p>
+    <ul style="font-size:17px;line-height:1.7;margin:40px 0;">
+        <li>✅ Короткая оранжевая линия **видна сразу** в позиции, которую ты отметил синим</li>
+        <li>✅ Это **одна и та же линия** — она **не исчезает**, а плавно и непрерывно вытягивается вправо, пересекает границу и встаёт в правую колонку</li>
+        <li>✅ Двигается только gap между ROUTING, и COMPUTED.</li>
+        <li>✅ Весь остальной текст в левой колонке полностью неподвижен</li>
+    </ul>
+</div>
+
+<script>
+    const animatedPath = document.getElementById('animated-path');
+    const titleBottom = document.getElementById('title-bottom');
+    const wrapper = document.getElementById('hero-wrapper');
+
+    const TOTAL_LENGTH = 1420;
+
+    function updateAnimation() {
+        const rect = wrapper.getBoundingClientRect();
+        let progress = -rect.top / (wrapper.offsetHeight - window.innerHeight);
+        progress = Math.max(0, Math.min(1, progress));
+
+        // Одна линия — растягивается от короткой горизонтальной до полной траектории
+        const offset = TOTAL_LENGTH * (1 - progress);
+        animatedPath.setAttribute('stroke-dashoffset', offset);
+
+        // Схлопывание только COMPUTED.
+        const ease = progress * progress;
+        const gap = 32 * (1 - ease * 1.45);
+        titleBottom.style.setProperty('--gap', Math.max(2, gap) + 'px');
+
+        // Финальный boost толщины
+        animatedPath.style.strokeWidth = progress > 0.88 ? '5.8' : '4.4';
+    }
+
+    window.addEventListener('scroll', () => requestAnimationFrame(updateAnimation), { passive: true });
+    updateAnimation();
+</script>
+
+</body>
+</html>

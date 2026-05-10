@@ -46,11 +46,8 @@ function applyTweaks(t: Tweaks) {
   document.documentElement.style.setProperty('--hero-gx', t.heroGrid + 'px');
   syncHeroGrid();
 
-  const h1 = document.querySelector<HTMLElement>('.hero-left h1');
-  if (h1) {
-    if (t.h1 === 'a') h1.innerHTML = 'Optimal<br>tracer routing,<br><em>computed.</em>';
-    else h1.innerHTML = 'Heat tracer<br>routing,<br><em>delivered.</em>';
-  }
+  // H1 copy is owned by Hero.astro — do not overwrite innerHTML here,
+  // it would strip the .ping-dot indicator span and hardcode a trailing period.
 
   root.setProperty('--accent', t.accent);
 

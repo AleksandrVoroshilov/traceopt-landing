@@ -399,37 +399,38 @@ section.hero {
         linear-gradient(to left, var(--bg) 0%, transparent 12%);
 }
 
-/* Hero — ping-dot indicator (exact copy from coming-soon page) */
+/* Hero — pulsing square indicator (live computation marker) */
 .ping-dot {
     position: relative;
     display: inline-block;
-    width: 11px;
-    height: 11px;
-    margin-left: 4px;
-    vertical-align: middle;
-    margin-bottom: 4px;
+    width: 0.18em;          /* scales with h1 font-size — visible at any clamp */
+    height: 0.18em;
+    min-width: 12px;
+    min-height: 12px;
+    margin-left: 0.05em;
+    vertical-align: -0.02em; /* slightly below the baseline of "computed" */
 }
 
+/* Outer pulsing square (animated wave) */
 .ping-dot::before {
     content: "";
     position: absolute;
     inset: 0;
     background: var(--accent);
-    border-radius: 1px;
     animation: ping 2.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+    will-change: transform, opacity;
 }
 
+/* Inner solid square (static core) */
 .ping-dot::after {
     content: "";
     position: absolute;
     inset: 2px;
     background: var(--accent);
-    border-radius: 1px;
 }
 
 @keyframes ping {
-    75%,
-    100% {
+    75%, 100% {
         transform: scale(2.1);
         opacity: 0;
     }
@@ -438,6 +439,7 @@ section.hero {
 @media (prefers-reduced-motion: reduce) {
     .ping-dot::before {
         animation: none;
+        opacity: 0;
     }
 }
 

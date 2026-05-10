@@ -28,6 +28,9 @@ const SPRING_K = 0.06;
 const DAMPING = 0.86;
 const ALPHA = 1.0;
 const RAMP_STOPS = 32;
+// Reference cloud width (CSS px) at which point sizes are visually tuned.
+// Below this scale points shrink, above — grow, keeping density consistent.
+const REF_CLOUD_SCALE = 960;
 
 export async function initParticleCanvas(): Promise<void> {
   const wrap = document.getElementById(
@@ -142,15 +145,22 @@ export async function initParticleCanvas(): Promise<void> {
   const material = new THREE.ShaderMaterial({
     uniforms: {
       uBaseSize: { value: BASE_RADIUS },
+      uPixelRatio: { value: renderer.getPixelRatio() },
+      uCloudScale: { value: 1.0 },
     },
     vertexShader: `
+      uniform float uPixelRatio;
+      uniform float uCloudScale;
       attribute float size;
       varying vec3 vColor;
 
       void main() {
         vColor = color;
         vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-        gl_PointSize = max(0.5, size * 2.1);  // Tuned for correct visual size
+        // gl_PointSize is in framebuffer pixels — multiply by uPixelRatio to
+        // keep CSS-pixel size constant across DPRs, and by uCloudScale to grow
+        // points proportionally with the cloud (density stays consistent).
+        gl_PointSize = max(0.5, size * 2.1) * uPixelRatio * uCloudScale;
         gl_Position = projectionMatrix * mvPosition;
       }
     `,
@@ -191,9 +201,18 @@ export async function initParticleCanvas(): Promise<void> {
       particles[i].homeX = ox + homesNorm[i].nx * scale;
       particles[i].homeY = oy + homesNorm[i].ny * scale;
     }
+    // Scale point size with cloud — keeps visual density invariant.
+    material.uniforms.uCloudScale.value = scale / REF_CLOUD_SCALE;
   };
 
   const fit = () => {
+    // Re-sync DPR every fit — browser zoom and display moves can change it.
+    const dpr = Math.min(2, window.devicePixelRatio);
+    if (renderer.getPixelRatio() !== dpr) {
+      renderer.setPixelRatio(dpr);
+      material.uniforms.uPixelRatio.value = dpr;
+    }
+
     const rect = wrap.getBoundingClientRect();
     cssW = rect.width;
     cssH = rect.height;

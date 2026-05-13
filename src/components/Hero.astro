@@ -1,72 +1,259 @@
 ---
+// 6 routing-network groups, copied verbatim from tasks/hero-svg-test.html.
+// Group 2 in .layer-main is replaced by one merged path for stroke-dashoffset
+// draw-on-scroll. All other groups render identically across all 3 layers.
+const groups: { g: string; paths: string[] }[] = [
+    {
+        g: "1",
+        paths: [
+            "M32 368H136",
+            "M32 368L32 392",
+            "M32 392H112",
+            "M112 392L112 464",
+            "M136 368V464",
+            "M136 464H264",
+            "M264 464L264 672",
+            "M160 672H264",
+        ],
+    },
+    {
+        g: "2",
+        paths: [
+            "M8 440H360",
+            "M360 440L360 496",
+            "M360 496L288 496",
+            "M288 496L288 520",
+            "M288 520L488 520",
+            "M488 520L488 816",
+            "M488 816H560",
+            "M560 816V936",
+        ],
+    },
+    {
+        g: "3",
+        paths: [
+            "M288 672V544",
+            "M288 544L416 544",
+            "M416 608L440 632",
+            "M440 632H464",
+            "M464 632V864",
+            "M464 864L440 864",
+            "M440 864L440 792",
+            "M440 792H208",
+            "M416 544L416 608",
+        ],
+    },
+    {
+        g: "4",
+        paths: [
+            "M160 392H248",
+            "M248 392V224",
+            "M248 224H272",
+            "M272 224L272 416",
+            "M272 416H352",
+            "M352 416L352 392",
+            "M352 392L336 376",
+            "M336 376V352",
+            "M336 352H424",
+            "M424 352L448 376",
+            "M448 376H520",
+            "M520 376L520 416",
+            "M520 416H456",
+            "M456 416L456 440",
+            "M456 440H744",
+            "M744 440L744 368",
+            "M744 368L720 368",
+            "M720 368V328",
+            "M720 328H672",
+            "M672 328V272",
+            "M672 272H552",
+        ],
+    },
+    {
+        g: "5",
+        paths: [
+            "M936 272L696 272",
+            "M696 272V304",
+            "M696 304H808",
+            "M808 304L808 328",
+            "M808 328L744 328",
+            "M744 328L744 352",
+            "M744 352H768",
+            "M768 352V536",
+            "M768 536H512",
+            "M512 536L512 512",
+            "M512 512H744",
+            "M744 512L744 464",
+            "M744 464L456 464",
+            "M456 464L456 568",
+            "M456 568L312 568",
+            "M312 568V616",
+            "M312 616L344 616",
+            "M344 616V696",
+            "M344 696L376 696",
+            "M376 696L376 760",
+            "M376 760L384 768",
+            "M384 768H408",
+            "M408 768L416 760",
+            "M416 760L416 696",
+            "M416 696H536",
+        ],
+    },
+    {
+        g: "6",
+        paths: [
+            "M832 168V360",
+            "M832 360H792",
+            "M792 360L792 536",
+            "M792 536H832",
+            "M832 536L856 560",
+            "M856 560L856 624",
+            "M832 648H768",
+            "M768 648V616",
+            "M768 616L744 616",
+            "M744 616V560",
+            "M744 560H688",
+            "M688 560L672 576",
+            "M672 576L632 576",
+            "M632 576L632 696",
+            "M632 696H608",
+            "M608 696L608 608",
+            "M608 608L464 608",
+            "M856 624L832 648",
+        ],
+    },
+];
 
+const mergedGroup2 = "M8 440H360V496H288V520H488V816H560V936";
 ---
 
-<section class="hero" data-screen-label="01 hero">
-    <div class="hero-left">
-        <div class="meta">
-            <span><b>Traceopt</b> / 2026</span>
-            <span>Heat tracing · Routing</span>
-            <span>Engineering as a service</span>
-            <span>Not a CAD plugin</span>
+<div class="hero-pin-wrap">
+    <section class="hero" data-screen-label="01 hero">
+        <div class="hero-left">
+            <div class="meta">
+                <span><b>Traceopt</b> / 2026</span>
+                <span>Heat tracing · Routing</span>
+                <span>Engineering as a service</span>
+                <span>Not a CAD plugin</span>
+            </div>
+
+            <div class="headline">
+                <h1 class="display">
+                    Optimal<br />tracer routing,<br /><em
+                        >computed<span class="ping-dot"></span></em
+                    >
+                </h1>
+                <p class="lede">
+                    You send piping data and the tracing brief.<br />
+                    We return optimized tracer circuits as (x, y, z) polylines.
+                </p>
+                <div class="cta-row">
+                    <a href="#contact" class="btn btn-primary btn-lg"
+                        >Send brief →</a
+                    >
+                    <a href="#datasheet" class="btn btn-ghost btn-lg"
+                        >Datasheet</a
+                    >
+                </div>
+                <div class="note">
+                    Reply within 1 business day · Pilot is free
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="s">
+                    <div class="n">−9.7<sup>%</sup></div><div class="l">
+                        Tracer length<br />vs manual baseline
+                    </div>
+                </div>
+                <div class="s">
+                    <div class="n">&lt;5<sup>min</sup></div><div class="l">
+                        Solve time<br /><b>1 000</b> segments
+                    </div>
+                </div>
+                <div class="s">
+                    <div class="n">06<sup>/6</sup></div><div class="l">
+                        Circuits returned<br />fully satisfied
+                    </div>
+                </div>
+                <div class="s">
+                    <div class="n">80<sup>%</sup></div><div class="l">
+                        Manual routing<br />industry baseline
+                    </div>
+                </div>
+            </div>
+
+            <span class="hero-stub" aria-hidden="true"></span>
         </div>
 
-        <div class="headline">
-            <h1 class="display">
-                Optimal<br />tracer routing,<br /><em
-                    >computed<span class="ping-dot"></span></em
-                >
-            </h1>
-            <p class="lede">
-                You send piping data and the tracing brief.<br />
-                We return optimized tracer circuits as (x, y, z) polylines.
-            </p>
-            <div class="cta-row">
-                <a href="#contact" class="btn btn-primary btn-lg"
-                    >Send brief →</a
-                >
-                <a href="#datasheet" class="btn btn-ghost btn-lg">Datasheet</a>
-            </div>
-            <div class="note">Reply within 1 business day · Pilot is free</div>
+        <div class="hero-right" id="hero-canvas-wrap">
+            <canvas
+                id="hero-canvas"
+                aria-hidden="true"
+                style="display:block;width:100%;height:100%"></canvas>
+            <svg
+                id="hero-svg-overlay"
+                viewBox="0 0 1024 1024"
+                preserveAspectRatio="xMidYMid meet"
+                aria-hidden="true"
+            >
+                <g class="layer-base">
+                    {
+                        groups
+                            .filter((grp) => grp.g !== "2")
+                            .map((grp) => (
+                                <g data-group={grp.g}>
+                                    {grp.paths.map((d) => (
+                                        <path d={d} />
+                                    ))}
+                                </g>
+                            ))
+                    }
+                </g>
+                <g class="layer-main">
+                    {
+                        groups.map((grp) =>
+                            grp.g === "2" ? (
+                                <g data-group="2" class="animated-group">
+                                    <path
+                                        class="animated"
+                                        d={mergedGroup2}
+                                        pathLength="1000"
+                                        stroke-dasharray="1000 1000"
+                                        stroke-dashoffset="1000"
+                                    />
+                                </g>
+                            ) : (
+                                <g data-group={grp.g}>
+                                    {grp.paths.map((d) => (
+                                        <path d={d} />
+                                    ))}
+                                </g>
+                            ),
+                        )
+                    }
+                </g>
+                <g class="layer-highlight">
+                    {
+                        groups.map((grp) => (
+                            <g data-group={grp.g}>
+                                {grp.paths.map((d) => (
+                                    <path d={d} />
+                                ))}
+                            </g>
+                        ))
+                    }
+                </g>
+            </svg>
         </div>
 
-        <div class="stats">
-            <div class="s">
-                <div class="n">−9.7<sup>%</sup></div><div class="l">
-                    Tracer length<br />vs manual baseline
-                </div>
-            </div>
-            <div class="s">
-                <div class="n">&lt;5<sup>min</sup></div><div class="l">
-                    Solve time<br /><b>1 000</b> segments
-                </div>
-            </div>
-            <div class="s">
-                <div class="n">06<sup>/6</sup></div><div class="l">
-                    Circuits returned<br />fully satisfied
-                </div>
-            </div>
-            <div class="s">
-                <div class="n">80<sup>%</sup></div><div class="l">
-                    Manual routing<br />industry baseline
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="hero-right" id="hero-canvas-wrap">
-        <canvas
-            id="hero-canvas"
-            aria-hidden="true"
-            style="display:block;width:100%;height:100%"></canvas>
-    </div>
-
-    <span class="hero-corner outer top-left" aria-hidden="true"></span>
-    <span class="hero-corner outer top-right" aria-hidden="true"></span>
-    <span class="hero-corner outer bottom-left" aria-hidden="true"></span>
-    <span class="hero-corner outer bottom-right" aria-hidden="true"></span>
-    <span class="hero-corner inner top-left" aria-hidden="true"></span>
-    <span class="hero-corner inner top-right" aria-hidden="true"></span>
-    <span class="hero-corner inner bottom-left" aria-hidden="true"></span>
-    <span class="hero-corner inner bottom-right" aria-hidden="true"></span>
-</section>
+        <span class="hero-corner outer top-left" aria-hidden="true"></span>
+        <span class="hero-corner outer top-right" aria-hidden="true"></span>
+        <span class="hero-corner outer bottom-left" aria-hidden="true"></span>
+        <span class="hero-corner outer bottom-right" aria-hidden="true"></span>
+        <span class="hero-corner inner top-left" aria-hidden="true"></span>
+        <span class="hero-corner inner top-right" aria-hidden="true"></span>
+        <span class="hero-corner inner bottom-left" aria-hidden="true"></span>
+        <span class="hero-corner inner bottom-right" aria-hidden="true"></span>
+    </section>
+</div>

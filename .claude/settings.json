@@ -1,10 +1,11 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(node -e \"console.log\\('astro:', require\\('./node_modules/astro/package.json'\\).version\\); console.log\\('three:', require\\('./node_modules/three/package.json'\\).version\\);\")",
+      "PowerShell(npm run build 2>&1)"
+    ],
     "additionalDirectories": [
       "C:\\Users\\Aleks\\.claude\\projects\\e--Projects-traceopt-landing"
-    ],
-    "allow": [
-      "Bash(node -e \"console.log\\('astro:', require\\('./node_modules/astro/package.json'\\).version\\); console.log\\('three:', require\\('./node_modules/three/package.json'\\).version\\);\")"
     ]
   }
 }

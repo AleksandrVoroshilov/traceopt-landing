@@ -22,6 +22,7 @@
     --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
 
     --gx: 32px;
+    --nav-h: 60px;
 }
 * {
     box-sizing: border-box;
@@ -65,6 +66,7 @@ body {
         linear-gradient(to right, rgba(20, 18, 15, 0.045) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(20, 18, 15, 0.045) 1px, transparent 1px);
     background-size: var(--gx) var(--gx);
+    background-attachment: fixed;
 }
 
 .wrap {
@@ -104,7 +106,7 @@ header.nav {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    height: 60px;
+    height: var(--nav-h);
     gap: 40px;
 }
 .brand {
@@ -264,9 +266,19 @@ nav.primary a .num {
 }
 
 /* ---------- HERO ---------- */
-section.hero {
+.hero-pin-wrap {
     position: relative;
-    min-height: 92vh;
+    height: 150vh; /* TUNING: bump to 180/220vh if anim feels rushed */
+    /* Negative margin pre-engages sticky at scrollY=0 (section natural top
+       sits 1px above the sticky target, so the browser doesn't have to flip
+       from natural→pinned mid-frame on the first scroll tick — that flip was
+       producing a ~1px visual drop the user kept reading as "micro-scroll"). */
+    margin-top: -1px;
+}
+section.hero {
+    position: sticky;
+    top: var(--nav-h);
+    height: calc(100vh - var(--nav-h));
     display: grid;
     grid-template-columns: 1fr 1fr;
     border-bottom: 1px solid var(--rule);
@@ -316,6 +328,8 @@ section.hero {
 .hero-left h1 em {
     font-style: normal;
     color: var(--accent);
+    display: inline-block;
+    margin-top: 24px; /* opens a visible gap for .hero-stub to sit in */
 }
 .hero-left .lede {
     margin-top: 22px;
@@ -401,6 +415,87 @@ section.hero {
     width: 100%;
     height: 100%;
 }
+
+/* Hero — gray stub in .hero-left. At idle it sits inside the .headline width
+   with a 48px gutter to the divider; on scroll, the right edge migrates to the
+   divider (48px → 0) while scaleX shrinks the line toward zero — both driven
+   by the single --stub-progress var. */
+.hero-stub {
+    position: absolute;
+    left: 48px;
+    right: calc(48px * var(--stub-progress, 1));
+    top: calc(var(--stub-y, 42.97%) - 2px);
+    height: 1px;
+    background: var(--rule);
+    transform-origin: right center;
+    transform: scaleX(var(--stub-progress, 1));
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Hero — SVG overlay (3 layers: base / main / highlight), on top of the canvas */
+#hero-svg-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none; /* canvas keeps its pointer-events; hover is sniffed from the wrap */
+}
+#hero-svg-overlay .layer-base path {
+    stroke: var(--ink);
+    stroke-width: 4.2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0.19;
+    vector-effect: non-scaling-stroke;
+}
+#hero-svg-overlay .layer-main path {
+    stroke: var(--accent);
+    stroke-width: 6.2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: none;
+    filter: drop-shadow(0 0 6px var(--accent));
+    vector-effect: non-scaling-stroke;
+    transition: stroke-width 0.09s ease, filter 0.12s ease;
+}
+#hero-svg-overlay .layer-main path.boosted {
+    stroke-width: 7.0;
+    filter: drop-shadow(0 0 9px var(--accent));
+}
+#hero-svg-overlay .layer-main g.active path {
+    stroke-width: 7.2;
+    filter: drop-shadow(0 0 10px var(--accent));
+}
+#hero-svg-overlay .layer-highlight path {
+    stroke: var(--ink);
+    stroke-width: 0.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0.35;
+    vector-effect: non-scaling-stroke;
+    will-change: opacity;
+}
+/* Pulse only while the scroll-driven animation is mid-flight (0 < progress < 1).
+   Tying motion to meaningful state — "system is computing now" — instead of
+   running ambiently, so the idle hero stays calm. */
+#hero-svg-overlay.computing .layer-highlight path {
+    animation: highlight-pulse 1.4s ease-in-out infinite;
+}
+@keyframes highlight-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 0.6; }
+}
+@media (prefers-reduced-motion: reduce) {
+    #hero-svg-overlay .layer-highlight path {
+        animation: none;
+        opacity: 0.35;
+    }
+}
+
 /* Hero — pulsing square indicator (live computation marker) */
 .ping-dot {
     position: relative;
@@ -1313,8 +1408,17 @@ footer {
 }
 
 @media (max-width: 1000px) {
+    .hero-pin-wrap {
+        height: auto;
+    }
     section.hero {
+        position: static;
+        height: auto;
+        min-height: 92vh;
         grid-template-columns: 1fr;
+    }
+    .hero-stub {
+        display: none;
     }
     .hero-right {
         min-height: 50vw;

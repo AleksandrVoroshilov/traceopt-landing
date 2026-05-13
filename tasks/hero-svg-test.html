@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Traceopt • Hero SVG 2026 — Final (1024×1024 + Group Hover)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #F4F1EA;
+    --ink: #14120F;
+    --accent: #D85A1B;
+    --paper: #FAF7F0;
+  }
+  
+  body {
+    background: var(--bg);
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  .hero-right {
+    width: 100%;
+    max-width: 720px;
+    aspect-ratio: 1 / 1;
+    background: var(--paper);
+    border: 1px solid #D9D3C4;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px -10px rgba(20,18,15,.15);
+  }
+
+  svg { width: 100%; height: 100%; display: block; }
+
+  /* BASE */
+  .layer-base g path {
+    stroke: #14120F;
+    stroke-width: 4.2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0.19;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* MAIN */
+  .layer-main g path {
+    stroke: var(--accent);
+    stroke-width: 6.2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: none;
+    filter: drop-shadow(0 0 6px var(--accent));
+    vector-effect: non-scaling-stroke;
+    transition: stroke-width .09s ease, filter .12s ease;
+  }
+
+  /* ACTIVE (вся группа) */
+  .layer-main g.active path {
+    stroke-width: 8.1;
+    filter: drop-shadow(0 0 16px var(--accent));
+  }
+
+  /* HIGHLIGHT */
+  .layer-highlight g path {
+    stroke: #fff;
+    stroke-width: 0.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0.48;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(244,241,234,.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid #D9D3C4;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero-right">
+  <svg id="hero-network" width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g id="original-paths">
+      <g id="Group 1">
+<path id="Line 14" d="M32 368H136" stroke="white" stroke-width="2"/>
+<path id="Line 15" d="M32 368L32 392" stroke="white" stroke-width="2"/>
+<path id="Line 16" d="M32 392H112" stroke="white" stroke-width="2"/>
+<path id="Line 17" d="M112 392L112 464" stroke="white" stroke-width="2"/>
+<path id="Line 18" d="M136 368V464" stroke="white" stroke-width="2"/>
+<path id="Line 19" d="M136 464H264" stroke="white" stroke-width="2"/>
+<path id="Line 20" d="M264 464L264 672" stroke="white" stroke-width="2"/>
+<path id="Line 21" d="M160 672H264" stroke="white" stroke-width="2"/>
+</g>
+<g id="Group 2">
+<path id="Line 22" d="M8 440H360" stroke="white" stroke-width="2"/>
+<path id="Line 23" d="M360 440L360 496" stroke="white" stroke-width="2"/>
+<path id="Line 24" d="M360 496L288 496" stroke="white" stroke-width="2"/>
+<path id="Line 25" d="M288 496L288 520" stroke="white" stroke-width="2"/>
+<path id="Line 26" d="M288 520L488 520" stroke="white" stroke-width="2"/>
+<path id="Line 27" d="M488 520L488 816" stroke="white" stroke-width="2"/>
+<path id="Line 28" d="M488 816H560" stroke="white" stroke-width="2"/>
+<path id="Line 29" d="M560 816V936" stroke="white" stroke-width="2"/>
+</g>
+<g id="Group 3">
+<path id="Line 30" d="M288 672V544" stroke="white" stroke-width="2"/>
+<path id="Line 31" d="M288 544L416 544" stroke="white" stroke-width="2"/>
+<path id="Line 32" d="M416 608L440 632" stroke="white" stroke-width="2"/>
+<path id="Line 33" d="M440 632H464" stroke="white" stroke-width="2"/>
+<path id="Line 34" d="M464 632V864" stroke="white" stroke-width="2"/>
+<path id="Line 35" d="M464 864L440 864" stroke="white" stroke-width="2"/>
+<path id="Line 36" d="M440 864L440 792" stroke="white" stroke-width="2"/>
+<path id="Line 37" d="M440 792H208" stroke="white" stroke-width="2"/>
+<path id="Line 38" d="M416 544L416 608" stroke="white" stroke-width="2"/>
+</g>
+<g id="Group 4">
+<path id="Line 39" d="M160 392H248" stroke="white" stroke-width="2"/>
+<path id="Line 40" d="M248 392V224" stroke="white" stroke-width="2"/>
+<path id="Line 41" d="M248 224H272" stroke="white" stroke-width="2"/>
+<path id="Line 42" d="M272 224L272 416" stroke="white" stroke-width="2"/>
+<path id="Line 43" d="M272 416H352" stroke="white" stroke-width="2"/>
+<path id="Line 44" d="M352 416L352 392" stroke="white" stroke-width="2"/>
+<path id="Line 45" d="M352 392L336 376" stroke="white" stroke-width="2"/>
+<path id="Line 46" d="M336 376V352" stroke="white" stroke-width="2"/>
+<path id="Line 47" d="M336 352H424" stroke="white" stroke-width="2"/>
+<path id="Line 48" d="M424 352L448 376" stroke="white" stroke-width="2"/>
+<path id="Line 49" d="M448 376H520" stroke="white" stroke-width="2"/>
+<path id="Line 50" d="M520 376L520 416" stroke="white" stroke-width="2"/>
+<path id="Line 51" d="M520 416H456" stroke="white" stroke-width="2"/>
+<path id="Line 52" d="M456 416L456 440" stroke="white" stroke-width="2"/>
+<path id="Line 53" d="M456 440H744" stroke="white" stroke-width="2"/>
+<path id="Line 54" d="M744 440L744 368" stroke="white" stroke-width="2"/>
+<path id="Line 55" d="M744 368L720 368" stroke="white" stroke-width="2"/>
+<path id="Line 56" d="M720 368V328" stroke="white" stroke-width="2"/>
+<path id="Line 57" d="M720 328H672" stroke="white" stroke-width="2"/>
+<path id="Line 58" d="M672 328V272" stroke="white" stroke-width="2"/>
+<path id="Line 59" d="M672 272H552" stroke="white" stroke-width="2"/>
+</g>
+<g id="Group 5">
+<path id="Line 60" d="M936 272L696 272" stroke="white" stroke-width="2"/>
+<path id="Line 61" d="M696 272V304" stroke="white" stroke-width="2"/>
+<path id="Line 62" d="M696 304H808" stroke="white" stroke-width="2"/>
+<path id="Line 63" d="M808 304L808 328" stroke="white" stroke-width="2"/>
+<path id="Line 64" d="M808 328L744 328" stroke="white" stroke-width="2"/>
+<path id="Line 65" d="M744 328L744 352" stroke="white" stroke-width="2"/>
+<path id="Line 66" d="M744 352H768" stroke="white" stroke-width="2"/>
+<path id="Line 67" d="M768 352V536" stroke="white" stroke-width="2"/>
+<path id="Line 68" d="M768 536H512" stroke="white" stroke-width="2"/>
+<path id="Line 69" d="M512 536L512 512" stroke="white" stroke-width="2"/>
+<path id="Line 70" d="M512 512H744" stroke="white" stroke-width="2"/>
+<path id="Line 71" d="M744 512L744 464" stroke="white" stroke-width="2"/>
+<path id="Line 72" d="M744 464L456 464" stroke="white" stroke-width="2"/>
+<path id="Line 73" d="M456 464L456 568" stroke="white" stroke-width="2"/>
+<path id="Line 74" d="M456 568L312 568" stroke="white" stroke-width="2"/>
+<path id="Line 75" d="M312 568V616" stroke="white" stroke-width="2"/>
+<path id="Line 76" d="M312 616L344 616" stroke="white" stroke-width="2"/>
+<path id="Line 77" d="M344 616V696" stroke="white" stroke-width="2"/>
+<path id="Line 78" d="M344 696L376 696" stroke="white" stroke-width="2"/>
+<path id="Line 79" d="M376 696L376 760" stroke="white" stroke-width="2"/>
+<path id="Line 80" d="M376 760L384 768" stroke="white" stroke-width="2"/>
+<path id="Line 81" d="M384 768H408" stroke="white" stroke-width="2"/>
+<path id="Line 82" d="M408 768L416 760" stroke="white" stroke-width="2"/>
+<path id="Line 83" d="M416 760L416 696" stroke="white" stroke-width="2"/>
+<path id="Line 84" d="M416 696H536" stroke="white" stroke-width="2"/>
+</g>
+<g id="Group 6">
+<path id="Line 85" d="M832 168V360" stroke="white" stroke-width="2"/>
+<path id="Line 86" d="M832 360H792" stroke="white" stroke-width="2"/>
+<path id="Line 87" d="M792 360L792 536" stroke="white" stroke-width="2"/>
+<path id="Line 88" d="M792 536H832" stroke="white" stroke-width="2"/>
+<path id="Line 89" d="M832 536L856 560" stroke="white" stroke-width="2"/>
+<path id="Line 90" d="M856 560L856 624" stroke="white" stroke-width="2"/>
+<path id="Line 92" d="M832 648H768" stroke="white" stroke-width="2"/>
+<path id="Line 93" d="M768 648V616" stroke="white" stroke-width="2"/>
+<path id="Line 94" d="M768 616L744 616" stroke="white" stroke-width="2"/>
+<path id="Line 95" d="M744 616V560" stroke="white" stroke-width="2"/>
+<path id="Line 96" d="M744 560H688" stroke="white" stroke-width="2"/>
+<path id="Line 97" d="M688 560L672 576" stroke="white" stroke-width="2"/>
+<path id="Line 98" d="M672 576L632 576" stroke="white" stroke-width="2"/>
+<path id="Line 99" d="M632 576L632 696" stroke="white" stroke-width="2"/>
+<path id="Line 100" d="M632 696H608" stroke="white" stroke-width="2"/>
+<path id="Line 101" d="M608 696L608 608" stroke="white" stroke-width="2"/>
+<path id="Line 102" d="M608 608L464 608" stroke="white" stroke-width="2"/>
+<path id="Line 103" d="M856 624L832 648" stroke="white" stroke-width="2"/>
+</g>
+    </g>
+  </svg>
+
+  <div class="controls">
+    <strong>Final 1024×1024 Version</strong><br>
+    Accent: <input type="color" id="accent-picker" value="#D85A1B" style="width:60px">
+  </div>
+</div>
+
+<script>
+  const svg = document.getElementById('hero-network');
+  const original = document.getElementById('original-paths');
+
+  function createLayers() {
+    const baseG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    baseG.className.baseVal = "layer-base";
+    baseG.innerHTML = original.innerHTML;
+    svg.appendChild(baseG);
+
+    const mainG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    mainG.className.baseVal = "layer-main";
+    mainG.innerHTML = original.innerHTML;
+    svg.appendChild(mainG);
+
+    const highlightG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    highlightG.className.baseVal = "layer-highlight";
+    highlightG.innerHTML = original.innerHTML;
+    svg.appendChild(highlightG);
+
+    original.remove();
+  }
+
+  createLayers();
+
+  let activeGroup = null;
+
+  svg.addEventListener('mousemove', (e) => {
+    const rect = svg.getBoundingClientRect();
+    const mouseX = ((e.clientX - rect.left) / rect.width) * 1024;
+    const mouseY = ((e.clientY - rect.top) / rect.height) * 1024;
+
+    let closestGroup = null;
+    let minDist = Infinity;
+
+    const groups = document.querySelectorAll('.layer-main g[id^="Group"]');
+
+    groups.forEach(group => {
+      let groupMinDist = Infinity;
+      group.querySelectorAll('path').forEach(path => {
+        const totalLength = path.getTotalLength();
+        for (let i = 0; i <= 8; i++) {
+          const point = path.getPointAtLength((totalLength / 8) * i);
+          const dist = Math.hypot(mouseX - point.x, mouseY - point.y);
+          if (dist < groupMinDist) groupMinDist = dist;
+        }
+      });
+
+      if (groupMinDist < minDist) {
+        minDist = groupMinDist;
+        closestGroup = group;
+      }
+    });
+
+    if (closestGroup && closestGroup !== activeGroup) {
+      if (activeGroup) activeGroup.classList.remove('active');
+      closestGroup.classList.add('active');
+      activeGroup = closestGroup;
+    }
+  });
+
+  svg.addEventListener('mouseleave', () => {
+    if (activeGroup) {
+      activeGroup.classList.remove('active');
+      activeGroup = null;
+    }
+  });
+
+  document.getElementById('accent-picker').addEventListener('input', e => {
+    document.documentElement.style.setProperty('--accent', e.target.value);
+  });
+</script>
+</body>
+</html>

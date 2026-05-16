@@ -61,6 +61,10 @@ export function initHeroScroll(): void {
         if (stub) {
             stub.style.setProperty("--stub-progress", String(1 - progress));
         }
+        // Drives the scroll-hint fade (CSS reads --hero-progress).
+        if (section) {
+            section.style.setProperty("--hero-progress", String(progress));
+        }
         animatedPath.setAttribute(
             "stroke-dashoffset",
             String(1000 * (1 - progress)),

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "fxhoudini": {
+      "command": "uvx",
+      "args": ["fxhoudinimcp"],
+      "env": {
+        "HOUDINI_HOST": "172.16.20.101",
+        "HOUDINI_PORT": "8100"
+      }
+    }
+  }
+}

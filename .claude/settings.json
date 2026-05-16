@@ -2,10 +2,22 @@
   "permissions": {
     "allow": [
       "Bash(node -e \"console.log\\('astro:', require\\('./node_modules/astro/package.json'\\).version\\); console.log\\('three:', require\\('./node_modules/three/package.json'\\).version\\);\")",
-      "PowerShell(npm run build 2>&1)"
+      "PowerShell(npm run build 2>&1)",
+      "Bash(node -e ' *)",
+      "Bash(rm \"tasks/_storyboard_extracted.html\" \"tasks/_storyboard_extracted.txt\" \"tasks/_styleframes_extracted.html\" \"tasks/_styleframes_extracted.txt\" && ls tasks/ | grep -v '^_')",
+      "mcp__fxhoudini__get_node_info",
+      "mcp__fxhoudini__get_env_variable",
+      "mcp__fxhoudini__list_children",
+      "mcp__fxhoudini__list_materials",
+      "WebFetch(domain:www.sidefx.com)",
+      "mcp__fxhoudini__evaluate_expression",
+      "mcp__fxhoudini__get_parameter",
+      "mcp__fxhoudini__get_parameter_schema",
+      "Bash(npm run *)"
     ],
     "additionalDirectories": [
-      "C:\\Users\\Aleks\\.claude\\projects\\e--Projects-traceopt-landing"
+      "C:\\Users\\Aleks\\.claude\\projects\\e--Projects-traceopt-landing",
+      "E:\\Projects\\traceopt-landing\\tasks"
     ]
   }
 }

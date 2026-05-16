@@ -132,7 +132,25 @@ Decisions on additional sections (Stats, Why, Bonus, Perks as standalone) are de
 
 - `tasks/` — coordination channel for agent handoffs. `/lead` writes briefs as `tasks/<agent>-<short-name>.md`; agents pick up tasks and leave responses there.
 
-## Responsive breakpoints
+## Houdini MCP — read-only policy
+
+The `fxhoudini` MCP server (`.mcp.json`) exposes 168+ tools against the user's running Houdini session. **Claude uses it for reading scene state ONLY** — inspect nodes, parameters, lights, render settings, geometry info, viewport snapshots. Houdini is the user's hands-on workspace; he learns by doing the edits himself.
+
+**Forbidden — never call without explicit per-action approval:**
+- Any `create_*`, `set_*`, `connect_*`, `disconnect_*`, `assign_*`, `delete_*`, `copy_*`, `rename_*`, `move_*`, `reorder_*` tool
+- `build_sop_chain`, `setup_render`, `setup_*_sim`, `create_light_rig`, `create_material*`
+- `execute_python`, `execute_hscript`, `set_wrangle_code`, `create_wrangle`, `create_vex_expression`
+- `save_scene`, `new_scene`, `load_scene`, `import_file`, `export_file`, `write_cache`, `clear_cache`
+- `start_render`, `render_node_network`, `cook_top_node`, `step_simulation`
+- `install_hda`, `update_hda`, `uninstall_hda`, `reload_hda`
+- `set_viewport_*`, `set_frame*`, `playbar_control`, `set_selection`
+
+**Allowed without approval:**
+- All `get_*`, `list_*`, `find_*`, `inspect_*`, `explain_*`, `sample_*`, `evaluate_expression`
+- `capture_screenshot`, `capture_network_editor`, `render_viewport`, `render_quad_view` (read viewport pixels, no scene change)
+- `log_status` — status-bar messages as progress feedback per MCP server's own instructions
+
+If an edit is needed, Claude **describes the change in text** (which node, which parameter, target value) and the user applies it in Houdini himself. This is mentorship, not auto-pilot.
 
 - `960px` — hide nav links, show hamburger
 - `768px` — stack flex layouts vertically

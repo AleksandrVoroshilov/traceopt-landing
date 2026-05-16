@@ -422,13 +422,23 @@ section.hero {
    by the single --stub-progress var. */
 .hero-stub {
     position: absolute;
-    left: 48px;
+    /* Width animated via left/right, NOT transform: scaleX. A transformed
+       element gets its own composite layer and the browser softens a 1px
+       line on it (it reads as ~2px / fuzzy). Plain layout positioning keeps
+       the line crisp. Cost is nil — childless absolute span, zero reflow.
+       left:  48px → 100% (left edge sweeps to the divider)
+       right: 48px →   0  (gutter closes onto the divider) */
+    left: calc(48px + (100% - 48px) * (1 - var(--stub-progress, 1)));
     right: calc(48px * var(--stub-progress, 1));
-    top: calc(var(--stub-y, 42.97%) - 2px);
-    height: 1px;
-    background: var(--rule);
-    transform-origin: right center;
-    transform: scaleX(var(--stub-progress, 1));
+    /* round() snaps the computed top to a whole pixel — a fractional Y would
+       smear the line across two physical rows. */
+    top: round(var(--stub-y, 42.97%) - 2px, 1px);
+    /* The line is a border, not a background fill. Browsers snap border edges
+       to device pixels far harder than background rects — so this renders
+       crisp, exactly like the hero-corner marks (which are also borders). */
+    height: 0;
+    border-top: 1px solid var(--ink);
+    opacity: 0.7; /* matches the hero-corner outer marks — thin, dark, crisp */
     pointer-events: none;
     z-index: 2;
 }
@@ -453,7 +463,7 @@ section.hero {
 }
 #hero-svg-overlay .layer-main path {
     stroke: var(--accent);
-    stroke-width: 6.2;
+    stroke-width: 10.0; /* +4 — matches the weight of "computed" in the H1 */
     stroke-linejoin: round;
     stroke-linecap: round;
     fill: none;
@@ -462,11 +472,11 @@ section.hero {
     transition: stroke-width 0.09s ease, filter 0.12s ease;
 }
 #hero-svg-overlay .layer-main path.boosted {
-    stroke-width: 7.0;
+    stroke-width: 10.0;
     filter: drop-shadow(0 0 9px var(--accent));
 }
 #hero-svg-overlay .layer-main g.active path {
-    stroke-width: 7.2;
+    stroke-width: 12.0;
     filter: drop-shadow(0 0 10px var(--accent));
 }
 #hero-svg-overlay .layer-highlight path {
@@ -494,6 +504,40 @@ section.hero {
         animation: none;
         opacity: 0.35;
     }
+}
+
+/* Hero — static scroll affordance. Muted gray, no motion (stays out of the
+   ping-square's orange/pulse channel). Fades over the first ~18% of scroll. */
+.hero-scroll-hint {
+    position: absolute;
+    left: 50%; /* centered on the column divider — clean bg, not behind the cloud */
+    bottom: 165px; /* ≈ level of the .stats div top border */
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    z-index: 3;
+    pointer-events: none;
+    opacity: clamp(0, calc(1 - var(--hero-progress, 0) / 0.18), 1);
+}
+.hero-scroll-hint .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.hero-scroll-hint .tick {
+    width: 1px;
+    height: 18px;
+    background: var(--rule-strong);
+}
+@media (max-width: 1000px) {
+    .hero-scroll-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .hero-scroll-hint { display: none; }
 }
 
 /* Hero — pulsing square indicator (live computation marker) */

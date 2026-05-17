@@ -13,7 +13,8 @@
       "mcp__fxhoudini__evaluate_expression",
       "mcp__fxhoudini__get_parameter",
       "mcp__fxhoudini__get_parameter_schema",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "mcp__fxhoudini__get_usd_prim"
     ],
     "additionalDirectories": [
       "C:\\Users\\Aleks\\.claude\\projects\\e--Projects-traceopt-landing",

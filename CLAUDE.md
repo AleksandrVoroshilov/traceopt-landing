@@ -71,7 +71,7 @@ https://www.rebelway.net/sci-fi-visualizations-houdini
 - **Framework:** Astro 6 (static output, islands для JS)
 - **3D / canvas:** Three.js 0.170 — Hero particle canvas (~22k points)
 - **Language:** TypeScript `strict: true` (через `astro/tsconfigs/strict`)
-- **CSS:** нативный, **один файл** `src/styles/global.css` (~1240 строк), при необходимости scoped `<style>` в `.astro`
+- **CSS:** нативный, **один файл** `src/styles/global.css` (~1500 строк), при необходимости scoped `<style>` в `.astro`
 - **Fonts:** Archivo Narrow (display, 400–700) + Inter (sans, 400/450/500/600) + JetBrains Mono (mono, 400/500), Google Fonts с `display=swap`
 - **Visual assets:** Hero particle dataset и планируемый process clip — рендерятся в Houdini (VFX pipeline)
 - **Build output:** статический HTML (`astro build` → `dist/`)
@@ -96,6 +96,7 @@ https://www.rebelway.net/sci-fi-visualizations-houdini
 | `--ok` | `#3e7e4e` | success state |
 | `--dark-bg` / `--dark-ink` / `--dark-muted` / `--dark-rule` | inverted | used spot-wise for dark blocks |
 | `--gx` | `32px` | background grid step |
+| `--nav-h` | `60px` | sticky nav height — hero sticks below it |
 
 ## Agents
 
@@ -118,7 +119,7 @@ https://www.rebelway.net/sci-fi-visualizations-houdini
 ## Page sections (actual — see `src/pages/index.astro`)
 
 1. `Nav.astro` — sticky header, brand mark, 4 anchor links, scroll-progress bar, Send brief CTA
-2. `Hero.astro` — split layout: meta line, h1 with em + ping-dot, lede, 2 CTAs, 3 stat cells; right column hosts `#hero-canvas` (Three.js)
+2. `Hero.astro` — split layout: meta line, h1 with em + ping-dot, lede, 2 CTAs, 4 stat cells, `.hero-stub` rule; right column hosts `#hero-canvas` (Three.js) + `#hero-svg-overlay` (3-layer routing-graph SVG). Wrapped in `.hero-pin-wrap` for a scroll-tied animation — section pins below the nav while `hero-scroll.ts` draws Group 2's tracer (`stroke-dashoffset`), shrinks the stub, and toggles the highlight pulse. `.hero-scroll-hint` fades out over the first ~18% of scroll. Pin/animation disabled below 1000px and under `prefers-reduced-motion`.
 3. `Marquee.astro` — horizontal colophon strip ("Data in / coordinates out / …")
 4. `Process.astro` — § 01 — four-step horizontal "how it works" line + clip-slot for upcoming Houdini-rendered process video
 5. `Result.astro` — § 02 — large −9.7% number, side metrics, baseline comparison
@@ -152,6 +153,7 @@ The `fxhoudini` MCP server (`.mcp.json`) exposes 168+ tools against the user's r
 
 If an edit is needed, Claude **describes the change in text** (which node, which parameter, target value) and the user applies it in Houdini himself. This is mentorship, not auto-pilot.
 
+- `1000px` — hero columns stack; hero pin/scroll-animation disabled (static section)
 - `960px` — hide nav links, show hamburger
 - `768px` — stack flex layouts vertically
 - `600px` — stats grid 2-column

@@ -472,7 +472,8 @@ section.hero {
     transition: stroke-width 0.09s ease, filter 0.12s ease;
 }
 #hero-svg-overlay .layer-main path.boosted {
-    stroke-width: 10.0;
+    /* End-of-draw flourish — glow only; stroke-width is already maxed on the
+       base .layer-main path rule, so a boost is purely a brief glow kick. */
     filter: drop-shadow(0 0 9px var(--accent));
 }
 #hero-svg-overlay .layer-main g.active path {
@@ -487,7 +488,6 @@ section.hero {
     fill: none;
     opacity: 0.35;
     vector-effect: non-scaling-stroke;
-    will-change: opacity;
 }
 /* Pulse only while the scroll-driven animation is mid-flight (0 < progress < 1).
    Tying motion to meaningful state — "system is computing now" — instead of
